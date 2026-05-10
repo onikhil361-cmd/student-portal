@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Student Registration</h1>
+
+    <p style="color:red;"><%= error %></p>
+
+    <form action="/submit"
+          method="POST"
+          onsubmit="return validateForm()">
+
+        <input type="text"
+               id="name"
+               name="name"
+               placeholder="Enter Name">
+
+        <input type="email"
+               id="email"
+               name="email"
+               placeholder="Enter Email">
+
+        <input type="number"
+               id="age"
+               name="age"
+               placeholder="Enter Age">
+
+        <button type="submit">Register</button>
+
+    </form>
+
+</div>
+
+<script>
+
+function validateForm() {
+
+    let name =
+        document.getElementById("name").value;
+
+    let email =
+        document.getElementById("email").value;
+
+    let age =
+        document.getElementById("age").value;
+
+    if(name === "" || email === "" || age === "") {
+
+        alert("Please fill all fields");
+        return false;
+    }
+
+    if(age < 18) {
+
+        alert("Age must be 18+");
+        return false;
+    }
+
+    return true;
+}
+
+</script>
+
+</body>
+</html>
