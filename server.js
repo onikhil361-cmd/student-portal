@@ -1,35 +1,41 @@
-const fs= require("fs-extra")
- const express = require("express");
-const bodyParser = require("body-parser");
+const express = require("express");
+const path = require("path");
+const fs = require("fs-extra");
 
 const app = express();
-let users = [];
+
+const PORT = 3000;
 
 app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-    res.render("index", { error: "" });
+
+    res.render("index", { error: null });
+
 });
 
 app.post("/submit", async (req, res) => {
 
     const { name, email, age } = req.body;
 
-    if(!name || !email || !age){
+    if (!name || !email || !age) {
 
         return res.render("index", {
-            error: "All fields required"
+            error: "All fields are required"
         });
+
     }
 
-    if(age < 18){
+    if (age < 18) {
 
         return res.render("index", {
             error: "Age must be 18+"
         });
+
     }
 
     let users = await fs.readJson("data.json");
@@ -45,6 +51,7 @@ app.post("/submit", async (req, res) => {
     res.redirect("/users");
 
 });
+
 app.get("/users", async (req, res) => {
 
     const users = await fs.readJson("data.json");
@@ -53,7 +60,20 @@ app.get("/users", async (req, res) => {
 
 });
 
-const PORT = process.env.PORT || 3000;
+app.post("/delete/:index", async (req, res) => {
+
+    const users = await fs.readJson("data.json");
+
+    users.splice(req.params.index, 1);
+
+    await fs.writeJson("data.json", users);
+
+    res.redirect("/users");
+
+});
+
 app.listen(PORT, () => {
+
     console.log(`Server running on http://localhost:${PORT}`);
+
 });
